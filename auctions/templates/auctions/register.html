@@ -1,30 +1,122 @@
-{% extends "auctions/layout.html" %}
+{% extends "auctions/layout.html" %} {% block body %}
 
-{% block body %}
+<h2>Register</h2>
 
-    <h2>Register</h2>
+{% if message %}
+<div>{{ message }}</div>
+{% endif %}
+<div class="form-container">
+	<form
+		action="{% url 'register' %}"
+		method="post"
+		name="register"
+		onsubmit="return validateForm()"
+	>
+		{% csrf_token %}
+		<div class="form-group" style="margin-top: 15px;">
+			<input
+				class="form-control"
+				autofocus
+				type="text"
+				name="username"
+				id="username"
+				placeholder="Username"
+			/>
+		</div>
+		<span id="user_error"></span>
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
+		<div class="form-group" style="margin-top: 15px;">
+			<input
+				class="form-control"
+				type="email"
+				name="email"
+				id="email"
+				placeholder="Email Address"
+			/>
+		</div>
+		<span id="email-error"></span>
 
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Register">
-    </form>
+		<div class="form-group" style="margin-top: 15px;">
+			<input
+				class="form-control"
+				type="password"
+				name="password"
+				id="password"
+				placeholder="Password"
+			/>
+		</div>
+		<span id="pass-error"></span>
 
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+		<div class="form-group" style="margin-top: 15px;">
+			<input
+				class="form-control"
+				type="password"
+				name="confirmation"
+				id="confirmation"
+				placeholder="Confirm Password"
+			/>
+		</div>
+		<span id="cpass-error"></span>
+		<div style="margin-top: 15px;"></div>
+
+		<input class="btn btn-primary" type="submit" value="Register" />
+	</form>
+</div>
+
+Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+<script>
+	function validateForm() {
+		var returnVal = true;
+		var form = document.forms["register"];
+		var username = form["username"].value;
+		var email = form["email"].value;
+		var pass = form["password"].value;
+		var confirmPass = form["confirmation"].value;
+		if (username.length == 0) {
+			document.getElementById("user_error").innerHTML =
+				"Username can't be empty";
+			document.getElementById("user_error").classList.add("error");
+			returnVal = false;
+		} else {
+			document.getElementById("user_error").innerHTML = "";
+			document.getElementById("user_error").classList.remove("error");
+		}
+		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+			document.getElementById("email-error").innerHTML = "";
+			document.getElementById("email-error").classList.remove("error");
+		} else {
+			document.getElementById("email-error").innerHTML =
+				"Enter a valid email address";
+			document.getElementById("email-error").classList.add("error");
+			returnVal = false;
+		}
+		if (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/.test(pass)) {
+			document.getElementById("pass-error").innerHTML = "";
+			document.getElementById("pass-error").classList.remove("error");
+		} else {
+			document.getElementById("pass-error").innerHTML =
+				"<li>minimum length 8 characters</li>";
+
+			document.getElementById("pass-error").innerHTML +=
+				"<li>minimum one number</li>";
+
+			document.getElementById("pass-error").innerHTML +=
+				"<li>minimum one symbol [!@#$%^&*]</li>";
+
+			document.getElementById("pass-error").classList.add("error");
+			returnVal = false;
+		}
+		if (pass !== confirmPass) {
+			document.getElementById("cpass-error").innerHTML =
+				"Password does not match";
+			document.getElementById("cpass-error").classList.add("error");
+			returnVal = false;
+		} else {
+			document.getElementById("cpass-error").innerHTML = "";
+			document.getElementById("cpass-error").classList.remove("error");
+		}
+		return returnVal;
+	}
+</script>
 
 {% endblock %}

@@ -1,44 +1,138 @@
-{% extends "auctions/layout.html" %}
-{% block body %}
+{% extends "auctions/layout.html" %} {% block body %}
 <div class="container">
-    <h2>Create listing</h2>
-
+	<h2>Create listing</h2>
 </div>
 <div class="container">
-    <form action="{% url 'submit' %}" method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="exampleFormControlInput1">Title</label>
-          <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Title of the lisiting..." name="title" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="exampleFormControlTextarea1">Description</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" placeholder="Description..." name="description" required></textarea>
-        </div>
-          <div class="form-group">
-            <label for="exampleFormControlSelect1">Category</label>
-            <select class="form-control" id="exampleFormControlSelect1" name="category" required>
-              <option>Fashion</option>
-              <option>Tools</option>
-              <option>Toys</option>
-              <option>Electronics</option>
-              <option>Home accessories</option>
-              <option>Books</option>
-            </select>
-          </div>
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Initial Bid</label>
-            <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Starting bid..." name="price" required>
-          </div>
-        
-          <div class="form-group">
-            <label for="exampleFormControlInput1">Image link (optional)</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="https://blah-blah.jpg..." name="link">
-          </div>
+	<form
+		action="{% url 'submit' %}"
+		method="POST"
+		name="listing-form"
+		onsubmit="return validateForm()"
+	>
+		{% csrf_token %}
+		<div class="form-group" style="margin-top: 15px">
+			<label for="exampleFormControlInput1">Title</label>
+			<input
+				type="text"
+				class="form-control"
+				id="exampleFormControlInput1"
+				placeholder="Title of the lisiting..."
+				name="title"
+			/>
+		</div>
+		<span id="title_error"></span>
 
-        <button class="btn btn-outline-info" type="submit">Submit</button>
+		<div class="form-group" style="margin-top: 15px">
+			<label for="exampleFormControlTextarea1">Description</label>
+			<textarea
+				class="form-control"
+				id="exampleFormControlTextarea1"
+				rows="5"
+				placeholder="Description..."
+				name="description"
+			></textarea>
+		</div>
+		<span id="des_error"></span>
 
-      </form>
+		<div class="form-group" style="margin-top: 15px">
+			<label for="exampleFormControlSelect1">Category</label>
+			<select
+				class="form-control"
+				id="exampleFormControlSelect1"
+				name="category"
+			>
+				<option value="" disabled selected>Category</option>
+				<option>Electronics</option>
+				<option>Home accessories</option>
+				<option>Fashion</option>
+				<option>Tools</option>
+				<option>Toys</option>
+				<option>Books</option>
+			</select>
+		</div>
+		<span id="cat_error"></span>
+		<div class="form-group" style="margin-top: 15px">
+			<label for="exampleFormControlInput1">Initial Bid</label>
+			<input
+				type="text"
+				class="form-control"
+				id="exampleFormControlInput1"
+				placeholder="Starting bid..."
+				name="price"
+			/>
+		</div>
+
+		<span id="bid-error"></span>
+		<div class="form-group" style="margin-top: 15px">
+			<label for="exampleFormControlInput1">Image link </label>
+			<input
+				type="text"
+				class="form-control"
+				id="exampleFormControlInput1"
+				placeholder="https://blah-blah.jpg..."
+				name="link"
+			/>
+		</div>
+		<span id="link_error"></span>
+		<div style="margin-top: 15px"></div>
+
+		<button class="btn btn-outline-info" type="submit">Submit</button>
+	</form>
 </div>
+
+<script>
+	function validateForm() {
+		var returnVal = true;
+		var form = document.forms["listing-form"];
+		var title = form["title"].value;
+		var description = form["description"].value;
+		var category = form["category"].value;
+		var bid = form["price"].value;
+		var link = form["link"].value;
+		if (title.length == 0) {
+			document.getElementById("title_error").innerHTML = "Title can't be empty";
+			document.getElementById("title_error").classList.add("error");
+			returnVal = false;
+		} else {
+			document.getElementById("title_error").innerHTML = "";
+			document.getElementById("title_error").classList.remove("error");
+		}
+		if (description.length == 0) {
+			document.getElementById("des_error").innerHTML =
+				"Please fill out Description";
+			document.getElementById("des_error").classList.add("error");
+			returnVal = false;
+		} else {
+			document.getElementById("des_error").innerHTML = "";
+			document.getElementById("des_error").classList.remove("error");
+		}
+		if (category == "") {
+			document.getElementById("cat_error").innerHTML =
+				"Please select a Category";
+			document.getElementById("cat_error").classList.add("error");
+			returnVal = false;
+		} else {
+			document.getElementById("cat_error").innerHTML = "";
+			document.getElementById("cat_error").classList.remove("error");
+		}
+		if (/^\d+$/.test(bid)) {
+			document.getElementById("bid-error").innerHTML = "";
+			document.getElementById("bid-error").classList.remove("error");
+		} else {
+			document.getElementById("bid-error").innerHTML = "Enter a valid Bid";
+			document.getElementById("bid-error").classList.add("error");
+			returnVal = false;
+		}
+		if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(link) || /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(link)) {
+			document.getElementById("link_error").innerHTML = "";
+			document.getElementById("link_error").classList.remove("error");
+			
+		} else {
+			document.getElementById("link_error").innerHTML = "Enter valid Image URL";
+			document.getElementById("link_error").classList.add("error");
+			returnVal = false;
+		}
+		return returnVal;
+	}
+</script>
 {% endblock %}
