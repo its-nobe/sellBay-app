@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import User,Bid,Listing,Comment,Watchlist,Closedbid,Alllisting
 from datetime import datetime
+from .filters import ListingFilter
 
 def index(request):
     items=Listing.objects.all()
@@ -14,9 +15,14 @@ def index(request):
         wcount=len(w)
     except:
         wcount=None
+    
+    myFilter = ListingFilter(request.GET, queryset=items)
+    items = myFilter.qs
+
     return render(request, "auctions/index.html",{
         "items":items,
-        "wcount":wcount
+        "wcount":wcount,
+        "myFilter": myFilter
     })
 
 def categories(request):
