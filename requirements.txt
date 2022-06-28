@@ -13,7 +13,6 @@ constantly==15.1.0
 cryptography==3.4.8
 dbus-python==1.2.18
 distro==1.7.0
-distro-info===1.1build1
 Django==4.0.4
 django-filter==21.1
 gunicorn==20.1.0
