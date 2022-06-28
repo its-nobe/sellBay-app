@@ -11,7 +11,7 @@ class Listing(models.Model):
     description = models.TextField()
     price = models.IntegerField()
     category = models.CharField(max_length=64)
-    link = models.CharField(max_length=64,default=None,blank=True,null=True)
+    link = models.TextField(default=None,blank=True,null=True)
     time = models.CharField(max_length=64)
 
 class Bid(models.Model):
